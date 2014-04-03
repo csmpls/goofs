@@ -1,5 +1,7 @@
 from flask import render_template, request, redirect, url_for, session, jsonify
 import praw
+from datetime import datetime
+import json
 from app import app
 
 CLIENT_ID = 'QOkJLc1GlplZgA'
@@ -19,7 +21,7 @@ def index():
 	if 'reddit_oauth' in session:
 	
 		# display posts...
-		posts = r.get_front_page(limit=75)
+		posts = r.get_front_page(limit=25)
 		return render_template("index.html",posts=posts)
 
 	# otherwise, start authentication process
@@ -64,5 +66,12 @@ def logged_out():
 def done():
 
 	posts = request.json['posts']
+
+	# get the log and save it
+	log = request.json
+	title = datetime.now().strftime("%d-%m-%y_%H:%M")
+	with open('logs/'+str(title)+'.json', 'w') as outfile:
+		json.dump(log, outfile)
+
 
 	return jsonify(html=render_template('review.html', posts=posts))
