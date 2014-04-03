@@ -16,7 +16,10 @@ transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/c
 // set keyboard shortcuts
 KeyboardJS.on('q', function() { note('q'); interestedIn(Reveal.getCurrentSlide()) }, null)
 KeyboardJS.on('e', function() { note('e'); skip(Reveal.getCurrentSlide()) }, null)
-KeyboardJS.on('h', function() { note('h') }, null)
+KeyboardJS.on('up', function() { note('up') }, null)
+KeyboardJS.on('down', function() { note('down') }, null)
+KeyboardJS.on('left', function() { note('left') }, null)
+KeyboardJS.on('right', function() { note('right'); checkIfEndOfFeed() }, null)
 
 // we open this queue after user is down browsing
 var read_queue = []
@@ -64,9 +67,8 @@ function skip(slide) {
 
 		// wait 300ms, then go right
 		setTimeout(function() { Reveal.right()}, 300);
-	}
-
-	
+	} else 
+		Reveal.right()
 
 
 }
@@ -122,9 +124,9 @@ Reveal.addEventListener( 'loadmeta', function() {
 }, false );
 
 // takes a jquery object and puts an interest marker on it
-// static/i.png is the interest marker
+// static/img/i.png is the interest marker
 function addInterestMarker(slide) {
-		slide.append("<div class='i'><img src='static/i.png'></div>")
+		slide.append("<div class='i'><img src='static/img/i.png'></div>")
 }
 
 function removeInterestMarker(slide) {
