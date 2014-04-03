@@ -24,29 +24,16 @@ var read_queue = []
 // if we express interest from article preview, we queue and go to the next slide
 function interestedIn(slide) {
 
-	// make sure we're not on the last slide
-	if (!Reveal.isLastSlide()) {
+	// check if we're done
+	checkIfEndOfFeed()
 
-		//  if we're on the main display slide,
-		if ($(slide).attr('id')) {
+	var main_slide = getAndGoToMainSlide(slide)
 
-			// go down to the article preview slide
-			Reveal.down()
+	queue(main_slide)
 
-		// if we're on a article preview slide
-		} else {
+	// wait 300ms, then go right
+	setTimeout(Reveal.right, 300);
 
-			queue(slide)
-
-			// check if we're done
-			checkIfEndOfFeed()
-
-			// go up
-			Reveal.up()
-			// wait 150ms, then go right
-			setTimeout(Reveal.right, 300);
-		}
-	}
 
 }
 
@@ -55,24 +42,9 @@ function skip(slide) {
 	// check if we're done
 	checkIfEndOfFeed()
 
-	// if we're on a main display slide,
-	if (!$(slide).attr('id')) {
+	var main_slide = getAndGoToMainSlide(slide)	
 
-		// first of all, get the slide with the interest marker on it
-		var main_slide = $(slide).prev()
-
-		// second of all, go up
-		Reveal.up()
-
-	}
-
-	// otherwise, we're already on the main slide
-	else 
-		var main_slide = $(slide)
-
-
-
-	// if user was interested in it before
+	// deque the slide if the user was interested in it before
 	if (hasInterestMarker(main_slide)) {
 
 		// we keep post url in id of <section> tag
@@ -89,22 +61,24 @@ function skip(slide) {
 		// remove interest marker from the main slide
 		removeInterestMarker(main_slide)
 
+		// wait 300ms, then go right
+		setTimeout(function() { Reveal.right()}, 300);
 	}
+
+	
 
 
 }
 
 // adds the URL for the given slide to our interest queue
-function queue(slide) {
-
-	// the main display slide has the url 
-	var main_slide = $(slide).prev()
+// we assume we're getting the main slide here, we should check before passing section 
+function queue(section) {
 
 	// we keep post url in id of <section> tag
-	var url = main_slide.attr('id') 
-	var title = main_slide.children('.title').html()
+	var url = section.attr('id') 
+	var title = section.children('.title').html()
 
-	if (!hasInterestMarker(main_slide)) {
+	if (!hasInterestMarker(section)) {
 
 	  	// add url to queue as a json object
 	  	read_queue.push({
@@ -112,8 +86,8 @@ function queue(slide) {
 	  		title:title
 	  	})
 
-	  	// add visual feedback to the slide to mark interest
-	  	addInterestMarker(main_slide)
+	  	// add visual feedback to the main slide to mark interest
+	  	addInterestMarker(section)
 
 	}
 	
@@ -182,6 +156,26 @@ function checkIfEndOfFeed() {
 		})
 	}
 
+}
+
+// returns jquery object of the main slide (i.e., not the preview slide)
+// and brings Reveal back up to the main slide, if we're in the preview 
+function getAndGoToMainSlide(slide) {
+
+	// if we're on a main display slide,
+	if ($(slide).attr('id')) {
+
+		return $(slide)
+
+	}
+
+	// get the main slide 
+	var main_slide = $(slide).prev()
+
+	// if not, we're on meta - go up
+	Reveal.up()
+
+	return main_slide
 }
 
 // remove an item from an array

@@ -19,7 +19,7 @@ def index():
 	if 'reddit_oauth' in session:
 	
 		# display posts...
-		posts = r.get_front_page(limit=75)
+		posts = r.get_front_page(limit=25)
 		return render_template("index.html",posts=posts)
 
 	# otherwise, start authentication process
