@@ -21,6 +21,9 @@ KeyboardJS.on('down', function() { note('down') }, null)
 KeyboardJS.on('left', function() { note('left') }, null)
 KeyboardJS.on('right', function() { note('right'); checkIfEndOfFeed() }, null)
 
+// embed previews of posts
+embedPreviews();
+
 // we open this queue after user is down browsing
 var read_queue = []
 
@@ -98,30 +101,30 @@ function queue(section) {
 }
 
 // this gets called whenever a div with datatype "loadmeta" is the current slide. we use it to load the preview embed on demand.
-Reveal.addEventListener( 'loadmeta', function() {
-	
-	//for some reason, this is not the slide we want, but the slide we just came from
-	var current_slide = Reveal.getCurrentSlide()
-
-	// get the slide we want
-	var ours = $(current_slide).next()
-					
-					
-	// if we haven't loaded it already,
-	if (ours.children(".embed").html() == undefined) {
-		ours.embedly({
-			query: { maxwidth: 520, wmode: 'transparent'},
-			key: 'd783a092be4446d1b18f0932593c59a5',
-			done: function(data){
-					//remove spinner when loaded
-					ours.children(".wait").remove();
-					// HACK
-					Reveal.up(); Reveal.down() 
-				}
-		})
-	}
-
-}, false );
+// Reveal.addEventListener( 'loadmeta', function() {
+// 	
+// 	//for some reason, this is not the slide we want, but the slide we just came from
+// 	var current_slide = Reveal.getCurrentSlide()
+// 
+// 	// get the slide we want
+// 	var ours = $(current_slide).next()
+// 					
+// 					
+// 	// if we haven't loaded it already,
+// 	if (ours.children(".embed").html() == undefined) {
+// 		ours.embedly({
+// 			query: { maxwidth: 520, wmode: 'transparent'},
+// 			key: 'd783a092be4446d1b18f0932593c59a5',
+// 			done: function(data){
+// 					//remove spinner when loaded
+// 					ours.children(".wait").remove();
+// 					// HACK
+// 					Reveal.up(); Reveal.down() 
+// 				}
+// 		})
+// 	}
+// 
+// }, false );
 
 // takes a jquery object and puts an interest marker on it
 // static/img/i.png is the interest marker
@@ -186,6 +189,16 @@ function getAndGoToMainSlide(slide) {
 	Reveal.up()
 
 	return main_slide
+}
+
+function embedPreviews() {
+
+	$('a').embedly({
+ 		query: { maxwidth: 520, wmode: 'transparent'},
+ 		key: 'd783a092be4446d1b18f0932593c59a5',
+ 		done: function(data){}
+	})
+
 }
 
 // remove an item from an array
