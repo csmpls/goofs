@@ -4,8 +4,8 @@ from datetime import datetime
 import json
 from app import app
 
-CLIENT_ID = 'QOkJLc1GlplZgA'
-CLIENT_SECRET = 'S5WFGh7QoKFKFxVtsN8YYzThyb4'
+CLIENT_ID = 'bJlnRecSnMwqUA'
+CLIENT_SECRET = 'kSGGXvPrMmO7JA0Hfznk0m9moaw'
 REDIRECT_URI = 'http://127.0.0.1:5000/authorize_callback'
 
 r = praw.Reddit('goof')
