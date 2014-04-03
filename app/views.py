@@ -1,5 +1,6 @@
 from flask import render_template, request, redirect, url_for, session, jsonify
 import praw
+from datetime import datetime
 from app import app
 
 CLIENT_ID = 'QOkJLc1GlplZgA'
@@ -64,5 +65,12 @@ def logged_out():
 def done():
 
 	posts = request.json['posts']
+
+	# get the log and save it
+	log = request.json
+	title = datetime.now().strftime("%d-%m-%y_%H:%M")
+	with open('logs/'+str(title)+'.json', 'w') as outfile:
+		json.dump(log, outfile)
+
 
 	return jsonify(html=render_template('review.html', posts=posts))
